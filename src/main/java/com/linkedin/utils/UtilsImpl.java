@@ -20,8 +20,10 @@ public class UtilsImpl implements Utils{
 			keyElements = key.split(";;;");
 			String role = keyElements[0].trim();
 			String companyName = keyElements[1].trim();
+			String location = keyElements[2].trim();
 			result.append("*** Role : ").append(role).append(" ***\n");
 			result.append("- Company : ").append(companyName).append("\n");
+			result.append("- Location : ").append(location).append("\n");
 			result.append("- Link : ").append(link).append("\n");
 			result.append("****************************\n");
 		}

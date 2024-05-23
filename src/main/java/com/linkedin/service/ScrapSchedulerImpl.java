@@ -3,6 +3,7 @@ package com.linkedin.service;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +24,11 @@ public class ScrapSchedulerImpl implements ScrapScheduler{
 		
 		@Autowired
 		EmailApplication emailApplication;
+		
+		@Value("${spring.scheduler.interval}")
+		private long interval = 0;
 
-	    @Scheduled(fixedRate = 60000) // 60000 milliseconds = 1 minute
+	    @Scheduled(fixedRateString = "#{T(java.util.concurrent.TimeUnit).SECONDS.toMillis(${spring.scheduler.interval})}")
 	    public void runTask() {
 	        Map<String,String> newJobsMap = runScrapper.launchScrapLinks();
 			log.info("new Jobs : "+newJobsMap);
