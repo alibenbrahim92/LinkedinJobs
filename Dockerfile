@@ -17,7 +17,7 @@ RUN apt-get update && \
 COPY target/Linkedin_Applications-0.0.1-SNAPSHOT.jar app.jar
 
 # Définir la variable d'environnement SPRING_MAIL_PASSWORD
-ENV SPRING_MAIL_PASSWORD=dacb8b5e2e830f6bc985cbecc059c1fb-a2dd40a3-53887258
+ENV SPRING_MAIL_PASSWORD=
 
 
 # Exposer le port de l'application Spring Boot

@@ -1,31 +1,15 @@
 package com.linkedin.service;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.UUID;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,43 +28,64 @@ public class SeleniumScrapperImpl implements SeleniumScrapper{
 		    Map<String, String> jobMap = getJobList();
 	    	return jobMap;
 	    } catch(NoSuchElementException e) {
-	    	log.error("Element not found");
+	    	log.error("No job found matching : "+keyword);
 	    	return new HashMap<String,String>();
 	    } 
 	}
     
     private Map<String,String> getJobList() {
-    	
+    	String unknowId  = UUID.randomUUID().toString();
     	Map<String,String> jobList = new HashMap<String,String>();
     	WebElement ulElement = driver.findElement(By.cssSelector(".jobs-search__results-list"));
     	List<WebElement> lis = ulElement.findElements(By.tagName("li"));
 	    for(WebElement liElement : lis) {
-	    	WebElement title = null;
+	    	WebElement titleElement;
+	    	String title = "Unknown Title "+unknowId;
 	    	try {
-	    		title = liElement.findElement(By.cssSelector(".sr-only"));
+	    		titleElement = liElement.findElement(By.cssSelector(".sr-only"));
+	    		title = titleElement.getText();
 	    	}catch(Exception e) {
-	    		System.out.println("Element not found, retrying...");
-	    		title = liElement.findElement(By.cssSelector(".base-search-card__title"));
+	    		System.out.println("Title not found, retrying...");
+	    		try {
+	    			titleElement = liElement.findElement(By.cssSelector(".base-search-card__title"));
+	    			title = titleElement.getText();
+	    		} catch(Exception f) {
+	    			System.out.println("Title not found !");
+	    		}
 	    	}
-	    	String text = title!=null? title.getText():"Unknown";
+	    	
 	    	WebElement aElement;
+	    	String link = "Unknow link "+unknowId;
 	    	try {
 	    		aElement = liElement.findElement(By.cssSelector(".base-card__full-link"));
+	    		link = aElement.getAttribute("href");
 	    	}catch(Exception e) {
-	    		aElement = liElement.findElement(By.tagName("a"));
+	    		try {
+		    		aElement = liElement.findElement(By.tagName("a"));
+		    		link = aElement.getAttribute("href");
+	    		} catch(Exception f) {
+	    			log.error("Link not found");
+	    		}
 	    	}
-	    	String link = aElement.getAttribute("href");
-	    	WebElement companyNameElement = liElement.findElement(By.cssSelector(".base-search-card__subtitle"));
-	    	String location = "Unknown";
+	    	
+	    	String companyName = "Unknown company "+unknowId;
+	    	try {
+	    		WebElement companyNameElement = liElement.findElement(By.cssSelector(".base-search-card__subtitle"));
+	    		companyName = companyNameElement.getText();
+	    	} catch(Exception e) {
+	    		log.error("Company Name not found");
+	    	}
+	    	
+	    	String location = "Unknown Location "+unknowId;
 	    	try {
 	    		WebElement locationElement = liElement.findElement(By.cssSelector(".job-search-card__location"));
 	    		location = locationElement.getText();
 	    	} catch(Exception e) {
-	    		System.out.println("Location not found");
+	    		log.error("Location not found");
 	    	}
 	    	
-	    	String companyName = companyNameElement.getText();
-	    	StringBuilder keyBuilder = new StringBuilder(String.format("%s ;;; %s ;;; %s", text, companyName, location));
+	    	
+	    	StringBuilder keyBuilder = new StringBuilder(String.format("%s ;;; %s ;;; %s", title, companyName, location));
 
             
 	    	jobList.put(keyBuilder.toString(), String.format("Link ;;; %s", link));
