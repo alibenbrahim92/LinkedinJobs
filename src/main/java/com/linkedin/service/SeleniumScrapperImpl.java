@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class SeleniumScrapperImpl implements SeleniumScrapper{
 	public Map<String,String> scrap(String keyword) {
 
 	    try {
-			driver.get(String.format("https://www.linkedin.com/jobs/search/?f_TPR=r3600&keywords=%s&location=Canada&origin=JOB_SEARCH_PAGE_LOCATION_AUTOCOMPLETE&refresh=true&position=1&pageNum=0",keyword));
+	    	driverGetLink(keyword);
 		    Map<String, String> jobMap = getJobList();
 	    	return jobMap;
 	    } catch(NoSuchElementException e) {
@@ -91,6 +92,34 @@ public class SeleniumScrapperImpl implements SeleniumScrapper{
 	    	jobList.put(keyBuilder.toString(), String.format("Link ;;; %s", link));
 	    }
 	    return jobList;
+    }
+    
+    private void driverGetLink(String keyword) {
+    	Integer maxRetryCount = 5;
+    	Integer retryCount = 0;
+    	while(retryCount < maxRetryCount) {
+	    	try {
+				driver.get(String.format("https://www.linkedin.com/jobs/search/?f_TPR=r3600&keywords=%s&location=Canada&origin=JOB_SEARCH_PAGE_LOCATION_AUTOCOMPLETE&refresh=true&position=1&pageNum=0",keyword));
+				break;
+	    	} catch(WebDriverException e) {
+	    		try {
+	    			driver.close();
+	    		} catch(WebDriverException wde) {
+	    			log.error("WebDriver may be already closed ...");
+	    		}
+	    		retryCount++;
+	    		driver = new ChromeDriver();
+	    		if(retryCount == maxRetryCount) {
+	    			throw e;
+	    		} else {
+	    			try {
+	    				Thread.sleep(5000);
+	    			}catch(InterruptedException ie) {
+	    				e.printStackTrace();
+	    			}
+	    		}
+	    	}
+    	}
     }
 
 }
