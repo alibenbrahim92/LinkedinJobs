@@ -33,7 +33,7 @@ public class ScrapSchedulerImpl implements ScrapScheduler{
 	        Map<String,String> newJobsMap = runScrapper.launchScrapLinks();
 			log.info("new Jobs : "+newJobsMap);
 			if(newJobsMap.size() != 0) {
-				emailApplication.sendEmail(utils.mapToString(newJobsMap));
+				emailApplication.sendEmail(utils.mapToSubject(newJobsMap),utils.mapToString(newJobsMap));
 			}
 	    }
 }

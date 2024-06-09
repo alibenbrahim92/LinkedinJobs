@@ -44,4 +44,33 @@ public class EmailApplicationImpl implements EmailApplication {
             return "Échec de l'envoi de l'e-mail : " + e.getMessage();
         }
     }
+    
+    @Override
+    public String sendEmail(String subject, String body) {
+        try {
+            // Crée un objet SimpleMailMessage
+            SimpleMailMessage message = new SimpleMailMessage();
+
+            // Adresse e-mail de l'expéditeur
+//            message.setFrom("alibenbrahim92u@gmail.com");
+
+            // Adresse e-mail du destinataire
+            message.setTo("alibenbrahim92u@gmail.com");
+
+            // Sujet de l'e-mail
+            message.setSubject(subject);
+
+            // Ajoute le contenu
+            message.setText(body);
+
+            // Envoyer l'e-mail
+            javaMailSender.send(message);
+            log.info("E-mail envoyé avec succès !");
+            return "E-mail envoyé avec succès !";
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Échec de l'envoi de l'e-mail !");
+            return "Échec de l'envoi de l'e-mail : " + e.getMessage();
+        }
+    }
 }

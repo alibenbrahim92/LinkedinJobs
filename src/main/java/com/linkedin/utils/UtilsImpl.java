@@ -1,5 +1,6 @@
 package com.linkedin.utils;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -28,6 +29,13 @@ public class UtilsImpl implements Utils{
 			result.append("****************************\n");
 		}
 		return result.toString();
+	}
+	
+	@Override
+	public String mapToSubject(Map<String,String> fromMap) {
+		
+		return String.format("%s new Java jobs at %s", fromMap.size(), LocalDateTime.now());
+		
 	}
 	
 }

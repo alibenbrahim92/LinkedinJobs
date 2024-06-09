@@ -4,4 +4,6 @@ import java.util.Map;
 
 public interface Utils {
 	String mapToString(Map<String,String> fromMap);
+	
+	String mapToSubject(Map<String,String> fromMap);
 }
