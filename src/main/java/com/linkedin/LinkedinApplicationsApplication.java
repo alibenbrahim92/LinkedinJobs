@@ -8,8 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.linkedin.email.EmailApplication;
 
-import lombok.extern.slf4j.Slf4j;
-
 @SpringBootApplication
 @EnableScheduling
 public class LinkedinApplicationsApplication {

@@ -1,8 +1,11 @@
 package com.linkedin.utils;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -35,6 +38,30 @@ public class UtilsImpl implements Utils{
 	public String mapToSubject(Map<String,String> fromMap) {
 		
 		return String.format("%s new Java jobs at %s", fromMap.size(), LocalDateTime.now());
+		
+	}
+	
+	@Override
+	public String mapToSubject(Map<String,String> fromMap, List<String> cities, String keyword) {
+		
+		String jobCities = fromMap.keySet()
+			.stream()
+			.map(e -> e.split(";;;")[2].trim())
+			.flatMap(e -> Arrays.stream(e.split(",")))
+			.map(e -> e.trim())
+			.distinct()
+			.filter(cities::contains)
+			.collect(Collectors.joining(", "));
+		
+		Boolean keywordFound = fromMap.keySet()
+				.stream()
+				.map(String::toUpperCase)
+				.anyMatch(e -> e.contains(keyword.toUpperCase()));
+		
+		// Print either "Java" or keyword in UpperCase
+		String newKeyword = keywordFound ? keyword.toUpperCase() : "Java";
+		
+		return String.format("%s : %s new %s jobs at %s", jobCities, fromMap.size(), newKeyword, LocalDateTime.now());
 		
 	}
 	
