@@ -19,8 +19,7 @@ public class LinkedinApplicationsApplication {
 	@Bean
 	CommandLineRunner run(EmailApplication emailApplication) {
 		return (args) ->{
-			System.out.println(emailApplication.sendEmail("Bonjour,\nCeci est un test de fonctionnement d'envoi d'email."));
-			
+			emailApplication.sendEmail("LinkedinApp email test","Bonjour,\nCeci est un test de fonctionnement d'envoi d'email.");
 		};
 	}
 }

@@ -1,6 +1,7 @@
 package com.linkedin.utils;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,15 +43,15 @@ public class UtilsImpl implements Utils{
 	}
 	
 	@Override
-	public String mapToSubject(Map<String,String> fromMap, List<String> cities, String keyword) {
+	public String mapToSubject(Map<String,String> fromMap, List<String> locations, String keyword) {
 		
-		String jobCities = fromMap.keySet()
+		String jobLocations = fromMap.keySet()
 			.stream()
 			.map(e -> e.split(";;;")[2].trim())
 			.flatMap(e -> Arrays.stream(e.split(",")))
 			.map(e -> e.trim())
 			.distinct()
-			.filter(cities::contains)
+			.filter(locations::contains)
 			.collect(Collectors.joining(", "));
 		
 		Boolean keywordFound = fromMap.keySet()
@@ -61,7 +62,9 @@ public class UtilsImpl implements Utils{
 		// Print either "Java" or keyword in UpperCase
 		String newKeyword = keywordFound ? keyword.toUpperCase() : "Java";
 		
-		return String.format("%s : %s new %s jobs at %s", jobCities, fromMap.size(), newKeyword, LocalDateTime.now());
+		String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		
+		return String.format("%s : %s new %s jobs at %s", jobLocations, fromMap.size(), newKeyword, dateTime);
 		
 	}
 	

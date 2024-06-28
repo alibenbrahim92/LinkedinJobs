@@ -8,6 +8,6 @@ public interface Utils {
 	
 	String mapToSubject(Map<String,String> fromMap);
 	
-	String mapToSubject(Map<String,String> fromMap, List<String> cities, String keyword);
+	String mapToSubject(Map<String,String> fromMap, List<String> locations, String keyword);
 
 }
